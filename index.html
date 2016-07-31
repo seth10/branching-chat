@@ -23,6 +23,9 @@
     <script>
       var socket = io();
 
+      var nickname = prompt('What is your name?') || 'Guest';
+      socket.emit('init nickname', nickname);
+
       $('form').submit(function() {
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
@@ -32,14 +35,14 @@
       function append(text) {
         $('#messages').append( $('<li>').text(text) );
       }
-      socket.on('user connect', function() {
-        append('A user joined.');
+      socket.on('user connect', function(nickname) {
+        append(nickname + ' joined.');
       });
       socket.on('chat message', function(msg) {
         append(msg);
       });
-      socket.on('user disconnect', function() {
-        append('A user left.');
+      socket.on('user disconnect', function(nickname) {
+        append(nickname + ' left.');
       });
     </script>
   </body>
