@@ -27,8 +27,14 @@
         $('#m').val('');
         return false;
       });
+      socket.on('user connect', function(){
+        $('#messages').append( $('<li>').text('A user joined.') );
+      });
       socket.on('chat message', function(msg){
         $('#messages').append( $('<li>').text(msg) );
+      });
+      socket.on('user disconnect', function(){
+        $('#messages').append( $('<li>').text('A user left.') );
       });
     </script>
   </body>
