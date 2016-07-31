@@ -11,6 +11,7 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #messages .system { font-style: italic; }
     </style>
   </head>
   <body>
@@ -32,17 +33,17 @@
         return false;
       });
 
-      function append(text) {
-        $('#messages').append( $('<li>').text(text) );
+      function append(text, styleClass) {
+        $('#messages').append( $('<li>').text(text).addClass(styleClass) );
       }
       socket.on('user connect', function(nickname) {
-        append(nickname + ' joined.');
+        append(nickname + ' joined.', 'system');
       });
       socket.on('chat message', function(msg) {
         append(msg);
       });
       socket.on('user disconnect', function(nickname) {
-        append(nickname + ' left.');
+        append(nickname + ' left.', 'system');
       });
     </script>
   </body>
