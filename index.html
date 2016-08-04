@@ -44,8 +44,12 @@
         append(nickname + ' joined.', 'system');
       });
       socket.on('chat message', function(msg) {
-        //append(msg);
-        $(':contains('+msg+')').removeClass('pending');
+        var pending = $('#messages .pending:contains('+msg+')');
+        console.log(pending);
+        if(pending.length)
+          pending.eq(0).removeClass('pending');
+        else
+          append(msg);
       });
       socket.on('user disconnect', function(nickname) {
         append(nickname + ' left.', 'system');
