@@ -11,7 +11,8 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
-      #messages .system { font-style: italic; }
+      #messages .system { font-weight: bold; }
+      #messages .pending { font-style: italic; }
     </style>
   </head>
   <body>
@@ -27,7 +28,10 @@
       var nickname = prompt('What is your name?') || 'Guest';
       socket.emit('init nickname', nickname);
 
+      $("#m").focus();
+
       $('form').submit(function() {
+        append(nickname+': '+$('#m').val(), 'pending');
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
@@ -40,7 +44,8 @@
         append(nickname + ' joined.', 'system');
       });
       socket.on('chat message', function(msg) {
-        append(msg);
+        //append(msg);
+        $(':contains('+msg+')').removeClass('pending');
       });
       socket.on('user disconnect', function(nickname) {
         append(nickname + ' left.', 'system');
