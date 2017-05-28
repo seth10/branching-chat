@@ -1,0 +1,22 @@
+<!DOCTYPE html>  <!-- HTML5 document type -->
+<html>
+<head>
+    <!-- use go-debug.js when developing and go.js when deploying -->
+    <script src="go-debug.js"></script>
+    <style>
+        #diagramDiv {
+            width: 400px;
+            height: 150px;
+            background-color: #DAE4E4;
+        }
+    </style>
+    <script type="text/javascript" defer>
+        var $ = go.GraphObject.make;
+        var diagram = $(go.Diagram, "diagramDiv");
+    </script>
+</head>
+<body>
+    <div id="diagramDiv"></div>
+</body>
+</html>
+

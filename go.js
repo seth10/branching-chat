@@ -1,0 +1,1 @@
+GoJS/release/go.js
