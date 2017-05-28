@@ -12,8 +12,8 @@
 </head>
 <body>
     <div id="diagramDiv"></div>
-    <input type="text", id="message", onkeydown="if(event.keyCode==13)document.getElementById('send').click()" />
-    <input type="button", id="send", value="Send", onclick="sendMessage()" />
+    <input type="text", id="message" />
+    <input type="button", id="send", value="Send" />
     <script type="text/javascript" defer>
         var $ = go.GraphObject.make;
         var diagram = $(go.Diagram, "diagramDiv", {
@@ -31,12 +31,18 @@
         ];
         diagram.model = model;
 
-        function sendMessage() {
+        textBox = document.getElementById("message");
+        sendButton = document.getElementById("send");
+
+        textBox.addEventListener("keypress", event => {
+            if (event.keyCode == 13 && textBox.value != "")
+                sendButton.click();
+        });
+        sendButton.addEventListener("click", function(){
             n = model.nodeDataArray.length;
-            m = document.getElementById("message").value;
-            model.addNodeData({ key: n+1, parent: n, name: m });
-            document.getElementById("message").value = "";
-        }
+            model.addNodeData({ key: n+1, parent: n, name: textBox.value });
+            textBox.value = "";
+        });
     </script>
 </body>
 </html>
