@@ -12,8 +12,10 @@
 </head>
 <body>
     <div id="diagramDiv"></div>
-    <input type="text", id="message" />
-    <input type="button", id="send", value="Send" />
+    <form action="">
+        <input type="text" />
+        <input type="submit", value="Send" />
+    </form>
     <script type="text/javascript" defer>
         var $ = go.GraphObject.make;
         var diagram = $(go.Diagram, "diagramDiv", {
@@ -31,18 +33,15 @@
         ];
         diagram.model = model;
 
-        textBox = document.getElementById("message");
-        sendButton = document.getElementById("send");
+        textBox = document.querySelector("input[type=text]");
+        form = document.getElementsByTagName("form")[0];
 
-        textBox.addEventListener("keypress", event => {
-            if (event.keyCode == 13 && textBox.value != "")
-                sendButton.click();
-        });
-        sendButton.addEventListener("click", function(){
+        form.onsubmit = function(event) {
             n = model.nodeDataArray.length;
             model.addNodeData({ key: n+1, parent: n, name: textBox.value });
             textBox.value = "";
-        });
+            event.preventDefault();
+        };
     </script>
 </body>
 </html>
