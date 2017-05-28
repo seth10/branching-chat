@@ -8,14 +8,28 @@
             height: 600px;
             background-color: #DAE4E4;
         }
+        #form {
+            margin: 12px;
+        }
+        #form * {
+            vertical-align: top;
+        }
+        #send {
+            vertical-align: bottom;
+        }
+        #username {
+            width: 8em;
+        }
     </style>
 </head>
 <body>
     <div id="diagramDiv"></div>
-    <form action="">
-        <input type="text" />
-        <input type="submit", value="Send" />
-    </form>
+    <div id="form">
+        <input type="text"   id="username" placeholder="Username" />
+        <textarea            id="message"  placeholder="Message"></textarea>
+        <input type="button" id="send"     value="Send" />
+    </div>
+
     <script type="text/javascript" defer>
         var $ = go.GraphObject.make;
         var diagram = $(go.Diagram, "diagramDiv", {
@@ -44,14 +58,21 @@
         ];
         diagram.model = model;
 
-        textBox = document.querySelector("input[type=text]");
-        form = document.getElementsByTagName("form")[0];
+        username = document.getElementById("username");
+        textBox = document.getElementById("message");
+        sendButton = document.getElementById("send");
 
-        form.onsubmit = function(event) {
+        textBox.onkeypress = function(event) {
+            if (event.keyCode == 13 && !event.shiftKey) {
+                sendButton.click();
+                event.preventDefault();
+            }
+        };
+        send.onclick = function(event) {
+            if (username.value == "" || textBox.value == "") return;
             n = model.nodeDataArray.length;
-            model.addNodeData({ key: n+1, parent: n, username: "Steff", message: textBox.value });
+            model.addNodeData({ key: n+1, parent: n, username: username.value, message: textBox.value });
             textBox.value = "";
-            event.preventDefault();
         };
     </script>
 </body>
