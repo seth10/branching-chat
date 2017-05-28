@@ -23,13 +23,24 @@
             layout: $(go.TreeLayout, {angle: 90, layerSpacing: 20}),
             "animationManager.isInitial": false
         });
-        diagram.linkTemplate = $(go.Link, $(go.Shape));
         diagram.isReadOnly = true;
+        diagram.linkTemplate = $(go.Link, $(go.Shape));
+        diagram.nodeTemplate = $(go.Node, "Auto",
+            $(go.Shape, "Rectangle", {stroke: "#333", fill: "#8CF"}),
+            $(go.Panel, "Horizontal",
+                $(go.Panel, "Auto", {stretch: go.GraphObject.Vertical},
+                    $(go.Shape, "Rectangle", {stroke: "transparent", fill: "#8FC"}),
+                    $(go.TextBlock, {margin: 8}, new go.Binding("text", "username")),
+                ),
+                $(go.TextBlock, {margin: 8}, new go.Binding("text", "message"))
+            )
+        );
+
         var model = $(go.TreeModel);
         model.nodeDataArray = [
-            { key: 1,            name: "Yo" },
-            { key: 2, parent: 1, name: "Ay man wassap" },
-            { key: 3, parent: 2, name: "The sky.\nDipshit." }
+            { key: 1,            username: "James", message: "Yo" },
+            { key: 2, parent: 1, username: "Aaron", message: "Ay man wassap" },
+            { key: 3, parent: 2, username: "James", message: "The sky.\nDipshit." }
         ];
         diagram.model = model;
 
@@ -38,7 +49,7 @@
 
         form.onsubmit = function(event) {
             n = model.nodeDataArray.length;
-            model.addNodeData({ key: n+1, parent: n, name: textBox.value });
+            model.addNodeData({ key: n+1, parent: n, username: "Steff", message: textBox.value });
             textBox.value = "";
             event.preventDefault();
         };
