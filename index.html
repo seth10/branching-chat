@@ -1,7 +1,6 @@
-<!DOCTYPE html>  <!-- HTML5 document type -->
+<!DOCTYPE html>
 <html>
 <head>
-    <!-- use go-debug.js when developing and go.js when deploying -->
     <script src="go-debug.js"></script>
     <style>
         #diagramDiv {
@@ -13,20 +12,31 @@
 </head>
 <body>
     <div id="diagramDiv"></div>
+    <input type="text", id="message", onkeydown="if(event.keyCode==13)document.getElementById('send').click()" />
+    <input type="button", id="send", value="Send", onclick="sendMessage()" />
     <script type="text/javascript" defer>
         var $ = go.GraphObject.make;
         var diagram = $(go.Diagram, "diagramDiv", {
             initialContentAlignment: go.Spot.Center,
-            layout: $(go.TreeLayout, {angle: 90, layerSpacing: 20})
+            layout: $(go.TreeLayout, {angle: 90, layerSpacing: 20}),
+            "animationManager.isInitial": false
         });
+        diagram.linkTemplate = $(go.Link, $(go.Shape));
+        diagram.isReadOnly = true;
         var model = $(go.TreeModel);
         model.nodeDataArray = [
             { key: 1,            name: "Yo" },
             { key: 2, parent: 1, name: "Ay man wassap" },
             { key: 3, parent: 2, name: "The sky.\nDipshit." }
         ];
-        diagram.isReadOnly = true;
         diagram.model = model;
+
+        function sendMessage() {
+            n = model.nodeDataArray.length;
+            m = document.getElementById("message").value;
+            model.addNodeData({ key: n+1, parent: n, name: m });
+            document.getElementById("message").value = "";
+        }
     </script>
 </body>
 </html>
