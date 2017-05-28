@@ -22,9 +22,10 @@ diagram.nodeTemplate = $(go.Node, "Auto",
 var model = $(go.TreeModel);
 diagram.model = model;
 
-username = document.getElementById("username");
-textBox = document.getElementById("message");
-sendButton = document.getElementById("send");
+
+var nickname = prompt("What is your name?") || "Guest";
+var textBox = document.getElementById("message");
+var sendButton = document.getElementById("send");
 
 textBox.onkeypress = function(event) {
     if (event.keyCode == 13 && !event.shiftKey) {
@@ -34,12 +35,11 @@ textBox.onkeypress = function(event) {
 };
 
 
-
 var socket = io();
 
 send.onclick = function() {
-    if (username.value == "" || textBox.value == "") return;
-    socket.emit("chat message", {username: username.value, message: textBox.value});
+    if (textBox.value == "") return;
+    socket.emit("chat message", {username: nickname, message: textBox.value});
     textBox.value = "";
 };
 
