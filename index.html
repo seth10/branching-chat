@@ -5,18 +5,29 @@
     <script src="go-debug.js"></script>
     <style>
         #diagramDiv {
-            width: 400px;
-            height: 150px;
+            width: 800px;
+            height: 600px;
             background-color: #DAE4E4;
         }
     </style>
-    <script type="text/javascript" defer>
-        var $ = go.GraphObject.make;
-        var diagram = $(go.Diagram, "diagramDiv");
-    </script>
 </head>
 <body>
     <div id="diagramDiv"></div>
+    <script type="text/javascript" defer>
+        var $ = go.GraphObject.make;
+        var diagram = $(go.Diagram, "diagramDiv", {
+            initialContentAlignment: go.Spot.Center,
+            layout: $(go.TreeLayout, {angle: 90, layerSpacing: 20})
+        });
+        var model = $(go.TreeModel);
+        model.nodeDataArray = [
+            { key: 1,            name: "Yo" },
+            { key: 2, parent: 1, name: "Ay man wassap" },
+            { key: 3, parent: 2, name: "The sky.\nDipshit." }
+        ];
+        diagram.isReadOnly = true;
+        diagram.model = model;
+    </script>
 </body>
 </html>
 
