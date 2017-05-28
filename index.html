@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="go-debug.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js" defer></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.js" defer></script>
+    <script type="text/javascript" src="go-debug.js" defer></script>
+    <script type="text/javascript" src="index.js" defer></script>
     <style>
         #diagramDiv {
             width: 800px;
@@ -29,52 +32,6 @@
         <textarea            id="message"  placeholder="Message"></textarea>
         <input type="button" id="send"     value="Send" />
     </div>
-
-    <script type="text/javascript" defer>
-        var $ = go.GraphObject.make;
-        var diagram = $(go.Diagram, "diagramDiv", {
-            initialContentAlignment: go.Spot.Center,
-            layout: $(go.TreeLayout, {angle: 90, layerSpacing: 20}),
-            "animationManager.isInitial": false
-        });
-        diagram.isReadOnly = true;
-        diagram.linkTemplate = $(go.Link, $(go.Shape));
-        diagram.nodeTemplate = $(go.Node, "Auto",
-            $(go.Shape, "Rectangle", {stroke: "#333", fill: "#8CF"}),
-            $(go.Panel, "Horizontal",
-                $(go.Panel, "Auto", {stretch: go.GraphObject.Vertical},
-                    $(go.Shape, "Rectangle", {stroke: "transparent", fill: "#8FC"}),
-                    $(go.TextBlock, {margin: 8}, new go.Binding("text", "username")),
-                ),
-                $(go.TextBlock, {margin: 8}, new go.Binding("text", "message"))
-            )
-        );
-
-        var model = $(go.TreeModel);
-        model.nodeDataArray = [
-            { key: 1,            username: "James", message: "Yo" },
-            { key: 2, parent: 1, username: "Aaron", message: "Ay man wassap" },
-            { key: 3, parent: 2, username: "James", message: "The sky.\nDipshit." }
-        ];
-        diagram.model = model;
-
-        username = document.getElementById("username");
-        textBox = document.getElementById("message");
-        sendButton = document.getElementById("send");
-
-        textBox.onkeypress = function(event) {
-            if (event.keyCode == 13 && !event.shiftKey) {
-                sendButton.click();
-                event.preventDefault();
-            }
-        };
-        send.onclick = function(event) {
-            if (username.value == "" || textBox.value == "") return;
-            n = model.nodeDataArray.length;
-            model.addNodeData({ key: n+1, parent: n, username: username.value, message: textBox.value });
-            textBox.value = "";
-        };
-    </script>
 </body>
 </html>
 

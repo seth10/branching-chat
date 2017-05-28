@@ -1,0 +1,15 @@
+{
+  "name": "branching-chat",
+  "version": "0.0.1",
+  "description": "You have a lot to talk with your friends about. Conversations branch and multiple topics come up. Keep your sanity, make things clear with logical grouping and partitioning.",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.4.8"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seth10/branching-chat.git"
+  },
+  "author": "Seth Tenembaum"
+}
