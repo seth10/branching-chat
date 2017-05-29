@@ -13,7 +13,7 @@ diagram.nodeTemplate = $(go.Node, "Auto",
     $(go.Panel, "Horizontal",
         $(go.Panel, "Auto", {stretch: go.GraphObject.Vertical},
             $(go.Shape, "Rectangle", {stroke: null, fill: "#8FC"}),
-            $(go.TextBlock, {margin: 8}, new go.Binding("text", "username")),
+            $(go.TextBlock, {margin: 8}, new go.Binding("text", "nickname")),
         ),
         $(go.TextBlock, {margin: 8}, new go.Binding("text", "message"))
     ),
@@ -41,7 +41,6 @@ var model = $(go.TreeModel);
 diagram.model = model;
 
 
-var nickname = prompt("What is your name?") || "Guest";
 var textBox = document.getElementById("message");
 var sendButton = document.getElementById("send");
 
@@ -55,12 +54,12 @@ textBox.onkeypress = function(event) {
 
 var socket = io();
 
+var nickname = prompt("What is your name?") || "Guest";
+socket.emit("introduction", nickname);
+
 send.onclick = function() {
     if (textBox.value == "") return;
-    socket.emit("chat message", {
-        username: nickname,
-        message: textBox.value,
-    });
+    socket.emit("chat message", textBox.value);
     textBox.value = "";
 };
 
@@ -69,9 +68,11 @@ socket.on('chat message', function(data) {
     model.addNodeData({
         key: n+1,
         parent: n,
-        username: data.username,
+        nickname: data.nickname,
         message: data.message,
         timestamp: data.timestamp
     });
 });
+
+// note: not handling the "introduction" or "disconnect" events
 

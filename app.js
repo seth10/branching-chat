@@ -3,29 +3,37 @@ var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 
-app.get("/", function(req, res){
-    res.sendFile(__dirname + "/index.html");
-});
 app.use(express.static(__dirname + "/"));
 
 io.on("connection", function(socket){
-    console.log("a user connected");
-    socket.on("chat message", function(data){
-        data.timestamp = (new Date()).toLocaleString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric"
-        });
-        console.log( "time: "+data.timestamp +
-                "\t username: "+data.username +
-                "\t message: "+data.message );
+    console.log("a user connected (waiting for nickname)");
+
+    socket.on("introduction", function(nickname) {
+        socket.nickname = nickname;
+        console.log(nickname + " joined.");
+        io.emit("introduction", nickname);
+    });
+
+    const timeFormat = {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+    };
+    socket.on("chat message", function(message){
+        let data = {}
+        data.message = message;
+        data.nickname = socket.nickname;
+        data.timestamp = (new Date()).toLocaleString("en-US", timeFormat);
+        console.log(data);
         io.emit("chat message", data);
     });
+
     socket.on("disconnect", function(){
-        console.log("user disconnected");
+        console.log(socket.nickname + " disconnected");
+        io.emit("disconnect", socket.nickname);
     });
 });
 
