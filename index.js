@@ -28,7 +28,10 @@ diagram.nodeTemplate.contextMenu = $(go.Adornment, "Vertical",
         $(go.TextBlock, "Mark as segue"),
         {click: function(e, obj) {
                     var n = obj.part.adornedPart.data;
-                    model.addNodeData({key:"a"+n.parent, parent:n.parent});
+                    model.addNodeData({
+                        key: "branch"+n.parent,
+                        parent: n.parent
+                    });
                 }
         }
     )
@@ -54,12 +57,21 @@ var socket = io();
 
 send.onclick = function() {
     if (textBox.value == "") return;
-    socket.emit("chat message", {username: nickname, message: textBox.value});
+    socket.emit("chat message", {
+        username: nickname,
+        message: textBox.value,
+    });
     textBox.value = "";
 };
 
 socket.on('chat message', function(data) {
     n = model.nodeDataArray.length;
-    model.addNodeData({ key: n+1, parent: n, username: data.username, message: data.message, timestamp: data.timestamp });
+    model.addNodeData({
+        key: n+1,
+        parent: n,
+        username: data.username,
+        message: data.message,
+        timestamp: data.timestamp
+    });
 });
 
