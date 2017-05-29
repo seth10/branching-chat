@@ -12,10 +12,25 @@ diagram.nodeTemplate = $(go.Node, "Auto",
     $(go.Shape, "Rectangle", {stroke: "#333", fill: "#8CF"}),
     $(go.Panel, "Horizontal",
         $(go.Panel, "Auto", {stretch: go.GraphObject.Vertical},
-            $(go.Shape, "Rectangle", {stroke: "transparent", fill: "#8FC"}),
+            $(go.Shape, "Rectangle", {stroke: null, fill: "#8FC"}),
             $(go.TextBlock, {margin: 8}, new go.Binding("text", "username")),
         ),
         $(go.TextBlock, {margin: 8}, new go.Binding("text", "message"))
+    ),
+    { toolTip: $(go.Adornment, "Auto",
+            $(go.Shape, "RoundedRectangle", {fill: "#FFF", stroke: null}),
+            $(go.TextBlock, new go.Binding("text", "timestamp"))
+    ) }
+);
+
+diagram.nodeTemplate.contextMenu = $(go.Adornment, "Vertical",
+    $("ContextMenuButton",
+        $(go.TextBlock, "Mark as segue"),
+        {click: function(e, obj) {
+                    var n = obj.part.adornedPart.data;
+                    model.addNodeData({key:"a"+n.parent, parent:n.parent});
+                }
+        }
     )
 );
 
@@ -45,6 +60,6 @@ send.onclick = function() {
 
 socket.on('chat message', function(data) {
     n = model.nodeDataArray.length;
-    model.addNodeData({ key: n+1, parent: n, username: data.username, message: data.message });
+    model.addNodeData({ key: n+1, parent: n, username: data.username, message: data.message, timestamp: data.timestamp });
 });
 

@@ -11,7 +11,8 @@ app.use(express.static(__dirname + '/'));
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('chat message', function(data){
-    console.log('username: ' + data.username + '\t message: ' + data.message);
+    data.timestamp = (new Date()).toLocaleString("en-US", {weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric"});
+    console.log('time: ' + data.timestamp + '\t username: ' + data.username + '\t message: ' + data.message);
     io.emit('chat message', data);
   });
   socket.on('disconnect', function(){
