@@ -28,10 +28,7 @@ diagram.nodeTemplate.contextMenu = $(go.Adornment, "Vertical",
         $(go.TextBlock, "Mark as segue"),
         {click: function(e, obj) {
                     var n = obj.part.adornedPart.data;
-                    model.addNodeData({
-                        key: "branch"+n.parent,
-                        parent: n.parent
-                    });
+                    socket.emit("new topic", n.message)
                 }
         }
     )
@@ -43,6 +40,7 @@ diagram.model = model;
 
 var textBox = document.getElementById("message");
 var sendButton = document.getElementById("send");
+var topicDropdown = document.getElementById("topics");
 
 textBox.onkeypress = function(event) {
     if (event.keyCode == 13 && !event.shiftKey) {
@@ -59,20 +57,47 @@ socket.emit("introduction", nickname);
 
 send.onclick = function() {
     if (textBox.value == "") return;
-    socket.emit("chat message", textBox.value);
+    socket.emit("chat message", {
+        message: textBox.value,
+        topic: topicDropdown.value
+    });
     textBox.value = "";
 };
 
-socket.on('chat message', function(data) {
-    n = model.nodeDataArray.length;
+let leaves = {}
+
+socket.on("new topic", function(data) {
+    if (leaves[data.topic] !== undefined) return; // topic already exists
+
     model.addNodeData({
-        key: n+1,
-        parent: n,
-        nickname: data.nickname,
-        message: data.message,
+        key: data.topic + 0,
+        nickname: "New Topic",
+        message: data.topic,
         timestamp: data.timestamp
     });
+
+    let option = document.createElement("option");
+    option.text = data.topic;
+    topicDropdown.add(option)
+
+    leaves[data.topic] = 0;
+});
+
+socket.on("chat message", function(data) {
+    let topic = data.topic
+    let n = leaves[topic]++;
+    model.addNodeData({
+        key:       topic + (n+1),
+        parent:    topic + n,
+        nickname:  data.nickname,
+        message:   data.message,
+        timestamp: data.timestamp
+    });
+    //leaves[topic]++;
 });
 
 // note: not handling the "introduction" or "disconnect" events
+
+
+socket.emit("new topic", "Main");
 

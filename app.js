@@ -22,11 +22,23 @@ io.on("connection", function(socket){
         minute: "numeric",
         second: "numeric"
     };
-    socket.on("chat message", function(message){
-        let data = {}
-        data.message = message;
-        data.nickname = socket.nickname;
-        data.timestamp = (new Date()).toLocaleString("en-US", timeFormat);
+
+    socket.on("new topic", function(topic){
+        let data = {
+            topic: topic,
+            timestamp: (new Date()).toLocaleString("en-US", timeFormat)
+        }
+        console.log(data);
+        io.emit("new topic", data);
+    });
+
+    socket.on("chat message", function(dataIn){
+        let data = {
+            message: dataIn.message,
+            topic: dataIn.topic,
+            nickname: socket.nickname,
+            timestamp: (new Date()).toLocaleString("en-US", timeFormat)
+        };
         console.log(data);
         io.emit("chat message", data);
     });
