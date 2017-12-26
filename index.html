@@ -1,7 +1,6 @@
 <html>
 <head>
-	<!-- TODO: try using defer attribute in the script tag -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://code.jquery.com/jquery.min.js"></script>
 	<script>
 		$(function() {
 			$("form").submit(function() {
@@ -12,7 +11,9 @@
 	</script>
 </head>
 <body>
-	<form action="javascript:alert('submitted (bad)')">
+	<div id="chat">
+	</div>
+	<form>
 		<input type="text" name="message">
 		<input type="submit" value="Send">
 	</form>
