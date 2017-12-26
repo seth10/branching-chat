@@ -1,0 +1,20 @@
+<html>
+<head>
+	<!-- TODO: try using defer attribute in the script tag -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script>
+		$(function() {
+			$("form").submit(function() {
+				alert($("input[name=message]").val());
+				return false;
+			});
+		});
+	</script>
+</head>
+<body>
+	<form action="javascript:alert('submitted (bad)')">
+		<input type="text" name="message">
+		<input type="submit" value="Send">
+	</form>
+</body>
+</html>
