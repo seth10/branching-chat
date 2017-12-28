@@ -1,0 +1,3 @@
+"Id (N)","Chat (L)","Origin (L)","Participants (SS)","Subject (S)"
+"3","[  { ""S"" : ""Seth: It's actually pretty fun"" }]","[  { ""N"" : ""2"" },  { ""N"" : ""3"" }]","{ ""Seth"", ""Stuart"" } ","AWS"
+"2","[  { ""S"" : ""Seth: yo wassup"" },  { ""S"" : ""Stuart: hey!"" },  { ""S"" : ""Seth: I'm learning AWS :D"" },  { ""S"" : "":AWS"" }]","[  { ""N"" : ""0"" },  { ""N"" : ""0"" }]","{ ""Seth"", ""Stuart"" } ","Main"
