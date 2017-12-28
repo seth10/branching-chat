@@ -11,9 +11,8 @@ exports.handler = (event, context, callback) => {
         },
         (err, data) => {
             if (err) console.log(err);
-            let chatIds = data.Items.filter(chat => chat.Participants.includes(event.queryStringParameters.name)).map(chat => chat.Id);
-            callback(null, JSON.stringify({chatIds: chatIds}));
+            let chatIds = data.Items.filter(chat => chat.Participants.values.includes(event.queryStringParameters.name)).map(chat => chat.Id);
+            callback(null, chatIds);
         }
     );
-    callback(null, JSON.stringify({}));
 };
