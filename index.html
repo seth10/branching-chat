@@ -1,51 +1,90 @@
 <html>
 <head>
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	<meta name="google-signin-client_id" content="1021086355611-d82v3qp0knv8jq38e5ev80aohaejkjnb.apps.googleusercontent.com">
-	<script>
-		function onSignIn(googleUser) {
-			var profile = googleUser.getBasicProfile();
-			console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-			console.log('Name: ' + profile.getName());
-			console.log('Image URL: ' + profile.getImageUrl());
-			console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-		}
-		function signOut() {
-			var auth2 = gapi.auth2.getAuthInstance();
-			auth2.signOut().then(function () {
-				console.log('User signed out.');
-			});
-		}
-	</script>
-
 	<script src="https://code.jquery.com/jquery.min.js"></script>
 	<script>
 		$(function() {
-			$("form").submit(function() {
-				alert($("input[name=message]").val());
+			$("form#login").submit(function() {
+				alert($("form#login input").val());
 				return false;
 			});
+			$("#chat2 form").submit(function() {
+				alert($("#chat2 input[name=message]").val());
+				return false;
+			});
+			addChat(3, "AWS", ["Seth: It's pretty cool", "Stuart: yeah!"]);
 		});
+		function addChat(id, subject, chat) {
+			let newChatDiv = document.createElement("div");
+			let newChatTitle = document.createElement("h2");
+			let newChatMessages = document.createElement("div");
+			let newChatForm = document.createElement("form");
+			let newChatText = document.createElement("input");
+			let newChatSend = document.createElement("input");
+			newChatDiv.id = "chat"+id;
+			newChatTitle.appendChild(document.createTextNode(subject));
+			newChatMessages.className = "messagesContainer";
+			newChatText.type = "text";
+			newChatText.name = "message";
+			newChatSend.type = "submit";
+			newChatSend.value = "Send";
+			newChatDiv.appendChild(newChatTitle);
+			newChatDiv.appendChild(newChatMessages);
+			newChatForm.appendChild(newChatText);
+			newChatForm.appendChild(newChatSend);
+			newChatDiv.appendChild(newChatForm);
+			chat.forEach(message => {
+				let newMessageP = document.createElement("p");
+				newMessageP.appendChild(document.createTextNode(message));
+				newChatMessages.appendChild(newMessageP);
+			});
+			document.getElementById("chats").append(newChatDiv);
+		}
 	</script>
 
 	<style>
+		body {
+			padding: 1em;
+		}
+		h1 {
+			font-family: Sans-Serif;
+			font-size: 3em;
+		}
 		#chats {
 			position: absolute;
-     		bottom: 0;
+     		bottom: 1em;
+			right: 0;
+		}
+		#chats > div {
+			border: 1px solid grey;
+			padding: 0 1em;
+			margin: 0 1em;
+			float: right;
+		}
+		div.messagesContainer p {
+			margin: 0.2em 0;
 		}
 	</style>
 </head>
 <body>
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
-	<a href="#" onclick="signOut();">Sign out</a>
+	<h1>branching.chat</h1>
+
+	<form id="login">
+		<label>Passphrase: <input type="text"></label>
+		<input type="submit" value="Login">
+	</form>
 
 	<div id="chats">
-		<div id="chat">
+		<div id="chat2">
+			<h2>Chat 2</h2>
+			<div class="messagesContainer">
+				<p>Seth: Hello!</p>
+				<p>Stuart: Hi</p>
+			</div>
+			<form>
+				<input type="text" name="message">
+				<input type="submit" value="Send">
+			</form>
 		</div>
-		<form>
-			<input type="text" name="message">
-			<input type="submit" value="Send">
-		</form>
 	</div>
 </body>
 </html>
