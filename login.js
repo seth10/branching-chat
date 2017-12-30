@@ -4,27 +4,46 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = (event, context, realCallback) => {
     dynamodb.getItem({
-        TableName: "branching.chat_users",
+        TableName: 'branching.chat_users',
         Key: {
-            "hash": {S: event.queryStringParameters.hash}
+            'hash': {S: event.queryStringParameters.hash}
         }
     }, (err, data) => {
         if (data.Item) {
-            callback(data.Item.name.S);
-        } else {
-            if (event.queryStringParameters.name) {
-                dynamodb.putItem({
-                    TableName: "branching.chat_users",
-                    Item: {
-                        hash: {S: event.queryStringParameters.hash},
-                        name: {S: event.queryStringParameters.name},
-                    }
-                }, (err, data) => {
-                    callback("added:"+event.queryStringParameters.name);
+            let response = {name: data.Item.name.S};
+            docClient.scan({TableName:'branching.chat'}, (err, data) => {
+                response.chats = data.Items.filter(chat => chat.Participants.values.includes(event.queryStringParameters.hash));
+                response.chats.forEach(chat => {
+                    let participants = chat.Participants.values;
+                    dynamodb.batchGetItem({
+                        RequestItems: {
+                            'branching.chat_users': {
+                                Keys: participants.map(hash=>({hash: {S: hash}}))
+                            }
+                        }
+                    }, (err, data) => {
+                        participants = data.Responses['branching.chat_users'].reduce((acc,cur)=>{acc[cur.hash.S]=cur.name.S;return acc}, {});
+                        chat.Chat.forEach(message => {
+                            if (message.n) {
+                                message.n = participants[message.n];
+                            }
+                        });
+                    });
                 });
-            } else {
-                callback("unknown");
-            }
+                setTimeout(()=>{callback(response)}, 1000);
+            });
+        } else if (event.queryStringParameters.name) {
+            dynamodb.putItem({
+                TableName: 'branching.chat_users',
+                Item: {
+                    hash: {S: event.queryStringParameters.hash},
+                    name: {S: event.queryStringParameters.name},
+                }
+            }, (err, data) => {
+                callback({name: event.queryStringParameters.name, 'new': true});
+            });
+        } else {
+            callback({unknown: true});
         }
     });
 
@@ -34,7 +53,7 @@ exports.handler = (event, context, realCallback) => {
             'headers': {
                 'Access-Control-Allow-Origin': '*',
             },
-            'body': body
+            'body': JSON.stringify(body)
         });
     }
 };
