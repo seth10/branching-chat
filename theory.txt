@@ -1,0 +1,20 @@
+---NEW USER---
+User types in a passphrase and hits Enter. On the client side it checks that the length of the passphrase is at least 8 characters.
+The passphrase is hashed and a call to branching-chat_login is made.
+The Lambda function looks up the hash in the branching.chat_users table. It is not found, so it knows this is a new user.
+braching-chat_login then looks up the hash in branching.chat_banned table. This contains the hashes of the most common passwords.
+If found, the function call returns "denied" and lets the user know that passphrase is too insecure.
+If not found, the function call returns "unknown" and lets the user know that their passphrase was not found.
+They are then prompted to enter their name to sign up. The branching-chat_login function is called again, this time with the hash AND name.
+
+
+
+
+User types in passphrase and hits Enter.
+The passphrase is hashed and a call to branching-chat_login is made.
+The Lambda function looks up the hash in the branching.chat_users table. If found, it returns the user's name.
+If not, it returns false and the user will be prompted to enter their name and submit again. This will be added to the users table.
+With a valid/registered passphrase, the list of chats that id participated in will be retrieved.
+
+
+"denied" "unknown" "found:Name"
