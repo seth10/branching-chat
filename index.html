@@ -1,18 +1,13 @@
 <html>
 <head>
-	<script src="https://code.jquery.com/jquery.min.js"></script>
 	<script>
-		$(function() {
-			$("form#login").submit(function() {
-				alert($("form#login input").val());
+		window.onload = function() {
+			document.getElementById("login").onsubmit = function() {
+				alert(document.getElementById("passphrase").value);
 				return false;
-			});
-			$("#chat2 form").submit(function() {
-				alert($("#chat2 input[name=message]").val());
-				return false;
-			});
+			};
 			addChat(3, "AWS", ["Seth: It's pretty cool", "Stuart: yeah!"]);
-		});
+		};
 		function addChat(id, subject, chat) {
 			let newChatDiv = document.createElement("div");
 			let newChatTitle = document.createElement("h2");
@@ -38,6 +33,10 @@
 				newChatMessages.appendChild(newMessageP);
 			});
 			document.getElementById("chats").append(newChatDiv);
+			newChatForm.onsubmit = function() {
+				alert(newChatText.value);
+				return false;
+			};
 		}
 	</script>
 
@@ -69,22 +68,10 @@
 	<h1>branching.chat</h1>
 
 	<form id="login">
-		<label>Passphrase: <input type="text"></label>
+		<label>Passphrase: <input type="text" id="passphrase"></label>
 		<input type="submit" value="Login">
 	</form>
 
-	<div id="chats">
-		<div id="chat2">
-			<h2>Chat 2</h2>
-			<div class="messagesContainer">
-				<p>Seth: Hello!</p>
-				<p>Stuart: Hi</p>
-			</div>
-			<form>
-				<input type="text" name="message">
-				<input type="submit" value="Send">
-			</form>
-		</div>
-	</div>
+	<div id="chats"></div>
 </body>
 </html>
