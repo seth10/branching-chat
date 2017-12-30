@@ -12,7 +12,9 @@
 						let responseP = document.getElementById("passphraseResponse");
 						while (responseP.firstChild) responseP.firstChild.remove();
 						responseP.appendChild(document.createTextNode("Name: "+res.name));
-						if (res.chats) res.chats.forEach(chat => addChat(chat.Id, chat.Subject, chat.Chat.filter(m=>m.n).map(m => m.n+": "+m.m)));
+						let chats = document.getElementById("chats");
+						while (chats.firstChild) chats.firstChild.remove();
+						res.chats && res.chats.forEach(chat => addChat(chat.Id, chat.Subject, chat.Chat.filter(m=>m.n).map(m => m.n+": "+m.m)));
 			        }
 			    };
 			    xhttp.open("GET", "https://q3naevrm3i.execute-api.us-east-1.amazonaws.com/prod/login?hash="+md5(document.getElementById("passphrase").value).toUpperCase(), true);
