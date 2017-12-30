@@ -7,9 +7,12 @@
 			    var xhttp = new XMLHttpRequest();
 			    xhttp.onreadystatechange = function() {
 			        if (this.readyState == 4 && this.status == 200) {
-						let responseP = document.createElement("p");
-						responseP.appendChild(document.createTextNode("Name: "+this.responseText));
-						document.getElementById("login").appendChild(responseP);
+						let res = JSON.parse(this.responseText);
+						//console.log(res);
+						let responseP = document.getElementById("passphraseResponse");
+						while (responseP.firstChild) responseP.firstChild.remove();
+						responseP.appendChild(document.createTextNode("Name: "+res.name));
+						if (res.chats) res.chats.forEach(chat => addChat(chat.Id, chat.Subject, chat.Chat.filter(m=>m.n).map(m => m.n+": "+m.m)));
 			        }
 			    };
 			    xhttp.open("GET", "https://q3naevrm3i.execute-api.us-east-1.amazonaws.com/prod/login?hash="+md5(document.getElementById("passphrase").value).toUpperCase(), true);
@@ -18,17 +21,6 @@
 				//alert(document.getElementById("passphrase").value);
 				return false;
 			};
-			addChat(2, "Main", [
-				"Seth: yo wassup",
-				"Stuart: hey!",
-				"Seth: I'm learning AWS :D",
-				":AWS",
-				"Seth: Hello!",
-				"Seth: Hello! 2"
-			]);
-			addChat(3, "AWS", [
-				"Seth: It's actually pretty fun"
-			]);
 		};
 		function addChat(id, subject, chat) {
 			let newChatDiv = document.createElement("div");
@@ -95,6 +87,7 @@
 	<form id="login">
 		<label>Passphrase: <input type="password" id="passphrase"></label>
 		<input type="submit" value="Login">
+		<p id="passphraseResponse"></p>
 	</form>
 
 	<div id="chats"></div>
