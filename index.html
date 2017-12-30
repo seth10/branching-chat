@@ -6,7 +6,17 @@
 				alert(document.getElementById("passphrase").value);
 				return false;
 			};
-			addChat(3, "AWS", ["Seth: It's pretty cool", "Stuart: yeah!"]);
+			addChat(2, "Main", [
+				"Seth: yo wassup",
+				"Stuart: hey!",
+				"Seth: I'm learning AWS :D",
+				":AWS",
+				"Seth: Hello!",
+				"Seth: Hello! 2"
+			]);
+			addChat(3, "AWS", [
+				"Seth: It's actually pretty fun"
+			]);
 		};
 		function addChat(id, subject, chat) {
 			let newChatDiv = document.createElement("div");
@@ -54,10 +64,13 @@
 			right: 0;
 		}
 		#chats > div {
-			border: 1px solid grey;
+			border: 1px solid lightgrey;
 			padding: 0 1em;
-			margin: 0 1em;
+			margin-right: 1em;
 			float: right;
+		}
+		#chats h2 {
+			margin: 16px 0;
 		}
 		div.messagesContainer p {
 			margin: 0.2em 0;
@@ -68,7 +81,7 @@
 	<h1>branching.chat</h1>
 
 	<form id="login">
-		<label>Passphrase: <input type="text" id="passphrase"></label>
+		<label>Passphrase: <input type="password" id="passphrase"></label>
 		<input type="submit" value="Login">
 	</form>
 
