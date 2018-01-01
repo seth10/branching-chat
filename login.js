@@ -13,7 +13,26 @@ exports.handler = (event, context, realCallback) => {
             let response = {name: data.Item.name.S};
             docClient.scan({TableName:'branching.chat'}, (err, data) => {
                 response.chats = data.Items.filter(chat => chat.Participants.values.includes(event.queryStringParameters.hash));
-                Promise.all(response.chats.map(replaceNames)).then(() => callback(response));
+    			let participantHashes = Array.from(new Set(
+    			        data.Items.map(chat => chat.Participants.values)
+    			                  .reduce((acc,cur) => acc.concat(cur), [])));
+    			dynamodb.batchGetItem({
+    				RequestItems: {
+    					'branching.chat_users': {
+    						Keys: participantHashes.map(hash=>({hash: {S: hash}}))
+    					}
+    				}
+    			}, (err, data) => {
+    				let participants = data.Responses['branching.chat_users'].reduce((acc,cur)=>{acc[cur.hash.S]=cur.name.S;return acc}, {});
+    				response.chats.forEach(chat => {
+        				chat.Chat.forEach(message => {
+        					if (message.n) {
+        						message.n = participants[message.n];
+        					}
+        				});
+    				});
+    				callback(response);
+    			});
             });
         } else if (event.queryStringParameters.name) {
 			addUsername().then(() => callback({name: event.queryStringParameters.name, 'new': true}));
@@ -21,27 +40,6 @@ exports.handler = (event, context, realCallback) => {
 			callback({unknown: true});
 		}
     });
-
-	function replaceNames(chat) {
-		return new Promise(function(resolve, reject) {
-			let participants = chat.Participants.values;
-			dynamodb.batchGetItem({
-				RequestItems: {
-					'branching.chat_users': {
-						Keys: participants.map(hash=>({hash: {S: hash}}))
-					}
-				}
-			}, (err, data) => {
-				participants = data.Responses['branching.chat_users'].reduce((acc,cur)=>{acc[cur.hash.S]=cur.name.S;return acc}, {});
-				chat.Chat.forEach(message => {
-					if (message.n) {
-						message.n = participants[message.n];
-					}
-				});
-				resolve();
-			});
-		});
-	}
 
 	function addUsername(name) {
         return new Promise(function(resolve, reject) {
