@@ -16,14 +16,8 @@ exports.handler = (event, context, realCallback) => {
     			let participantHashes = Array.from(new Set(
     			        data.Items.map(chat => chat.Participants.values)
     			                  .reduce((acc,cur) => acc.concat(cur), [])));
-    			dynamodb.batchGetItem({
-    				RequestItems: {
-    					'branching.chat_users': {
-    						Keys: participantHashes.map(hash=>({hash: {S: hash}}))
-    					}
-    				}
-    			}, (err, data) => {
-    				let participants = data.Responses['branching.chat_users'].reduce((acc,cur)=>{acc[cur.hash.S]=cur.name.S;return acc}, {});
+                getNames(participantHashes).then(data => {
+                    let participants = data.reduce((acc,cur)=>{acc[cur.hash.S]=cur.name.S;return acc}, {});
     				response.chats.forEach(chat => {
         				chat.Chat.forEach(message => {
         					if (message.n) {
@@ -32,7 +26,7 @@ exports.handler = (event, context, realCallback) => {
         				});
     				});
     				callback(response);
-    			});
+                });
             });
         } else if (event.queryStringParameters.name) {
 			addUsername().then(() => callback({name: event.queryStringParameters.name, 'new': true}));
@@ -40,6 +34,21 @@ exports.handler = (event, context, realCallback) => {
 			callback({unknown: true});
 		}
     });
+
+	function getNames(participantHashes) {
+		return new Promise(function(resolve, reject) {
+		    dynamodb.batchGetItem({
+				RequestItems: {
+					'branching.chat_users': {
+						Keys: participantHashes.map(hash=>({hash: {S: hash}}))
+					}
+				}
+			}, (err, data) => {
+                if (err) reject();
+				else resolve(data.Responses['branching.chat_users']);
+			});
+		});
+	}
 
 	function addUsername(name) {
         return new Promise(function(resolve, reject) {
